@@ -17,10 +17,9 @@
 
         var newTwittlers = function(twittleArray){
           for(var i = twittled; i < twittleArray.length; i++){
-
             var tweet = twittleArray[i];
             var $tweet = $('<div></div>');
-            var userName = '<a href=#>' + tweet.user + '</a>'
+            var userName = '<a href=# class="user">' + tweet.user + '</a>'
 
             $tweet.html('@' + userName + ': ' + tweet.message + ' ' + tweet.created_at).appendTo($('ul'));
             twittled = i+1;
@@ -28,10 +27,18 @@
           console.log(twittled)
         }
 
+        var viewUserHist = function(userName){
+          twittled = 0
+          newTwittlers(streams.users[userName]);
+        }
+
         newTwittlers(streams.home);
         
         $('button').click(function(){newTwittlers(streams.home)});
-        
+        $('.user').click(function(){
+          var username = $(this).text()
+          viewUserHist(username);
+        });
 
       });
 

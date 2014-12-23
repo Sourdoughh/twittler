@@ -2,8 +2,11 @@
 <html>
   <head>
     <title>Twittler!</title>
-    <script src="jquery.js"></script>
-    <script src="data_generator.js"></script>
+    <link rel='stylesheet' href='bootstrap/css/bootstrap.css'>
+    <script src='jquery.js'></script>
+    <script src='./bootstrap/js/bootstrap.min.js'></script>
+    <script src='data_generator.js'></script>
+
   </head>
   <body>
     <script>
@@ -11,6 +14,7 @@
     //1) If you spam the 'new twittlers' button you can accidentaly get duplicate tweets. :<! [fixed!]
     //2) want to display only x amount of tweets at a time (not necessary)
     //3) want to post to a list instead using feed
+    //4) add a modal windown for the timeline 
 
       $(document).ready(function(){
         var twittled = 0;
@@ -19,22 +23,32 @@
           for(var i = twittled; i < twittleArray.length; i++){
             var tweet = twittleArray[i];
             var $tweet = $('<div></div>');
-            var userName = '<a href=# class="user">' + tweet.user + '</a>'
+            var userName = '<a href=# class="user" data-toggle="modal" data-target="#myModal">' + tweet.user + '</a>'
 
-            $tweet.html('@' + userName + ': ' + tweet.message + ' ' + tweet.created_at).appendTo($('ul'));
+            $tweet.html('@' + userName + ': ' + tweet.message + ' ' + '<br>' + tweet.created_at).appendTo($('ul'));
             twittled = i+1;
           }
           console.log(twittled)
         }
 
+        var modalTimeline = function(twittleTimeline){
+          $('.modal-body').empty();
+          for(var i = 0; i < twittleTimeline.length; i++){
+            var tweet = twittleTimeline[i];
+            var $tweet = $('<div></div>');
+            $tweet.html('@' + tweet.user + ': ' + tweet.message + ' ' + '<br>' + tweet.created_at).appendTo($('.modal-body'));
+          }
+          console.log('success!');
+        }
+
         var viewUserHist = function(userName){
           twittled = 0
-          newTwittlers(streams.users[userName]);
+          modalTimeline(streams.users[userName]);
         }
 
         newTwittlers(streams.home);
         
-        $('button').click(function(){newTwittlers(streams.home)});
+        $('.newTw').click(function(){newTwittlers(streams.home)});
         $('.user').click(function(){
           var username = $(this).text()
           viewUserHist(username);
@@ -44,13 +58,28 @@
 
     </script>
 
-    <h2>Your Tweets</h2>
+    <h2>Your Tweet Feed</h2>
+    <input></input> <button class='btn btn-default'>Send</button>
+    <button class='btn btn-default newTw'>New twittlers</button>
 
-    <button class='refresh'>New twittlers</button>
-
-    <ul class='Feed'>      
+    <ul>
     </ul>
 
+        <div class='modal fade' id='myModal'>
+          <div class='modal-dialog'>
+            <div class='modal-content'>
+              <div class='modal-header'>
+                  <h4 class='modal-title' id='myModalLabel'>Timeline</h4>
+                </div>
+                <div class='modal-body'>
+                </div>
+                <div class='modal-footer'>
+                  <button type='button' class='btn btn-default' data-dismiss='modal'>Close</button>
+                </div>
+            </div>
+          </div>
+        </div>
+        
   </body>
 </html>
 
@@ -58,7 +87,7 @@
 1) Show the user new tweets somehow. (You can show them automatically as they're created, or create a button that displays new tweets.) [!!!done!!!]
 2) Display the timestamps of when the tweets were created. [!!!done!!!]
 3) Design your interface so that you want to look at and use the product you're making.
-4) Allow the user to click on a username to see that user's timeline. 
+4) Allow the user to click on a username to see that user's timeline. [!!!done!!!]
 
 Extra Credit:
 1) Show when the tweets were created in a human-friendly way (eg "10 minutes ago"). You'll want to find and use a library for this.
